@@ -6,6 +6,7 @@ import json
 import re
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+import chainlit as cl
 
 load_dotenv()
 
@@ -69,14 +70,14 @@ def should_use_mcp(query: str, rag_results: list) -> tuple[bool, str, dict]:
     except Exception as e:
         # print("Decision parsing error:", e, text)
         return False, "", {}
-
-async def main(user_query: str):
+@cl.on_message
+async def main(message: cl.Message):
     # Get RAG results
-    results = collection.query(query_texts=[user_query], n_results=20)
+    results = collection.query(query_texts=[message.content], n_results=20)
     #print("RAG Results:", results['documents'])
     
     # Check if MCP server should be called
-    use_mcp, tool_name, arguments = should_use_mcp(user_query, results['documents'])
+    use_mcp, tool_name, arguments = should_use_mcp(message.content, results['documents'])
     # print(f"Decision: use_mcp={use_mcp}, tool_name={tool_name}, arguments={arguments}")
     
     mcp_data = ""
@@ -96,13 +97,17 @@ async def main(user_query: str):
     
     response = model.generate_content([
         {"role":"user","parts":[{"text":system_prompt}]},
-        {"role":"user","parts":[{"text":user_query}]}
+        {"role":"user","parts":[{"text":message.content}]}
     ])
     
     print("\n\n---------------------\n\n")
     print(response.text)
     #print("RAG Results:", results['documents'])
-
+      # Send a response back to the user
+    await cl.Message(
+        content=f"Received: {response.text}",
+    ).send()
+    
 if __name__ == "__main__":
     import asyncio
     query = input("What do you want to know about health and wellness?\n\n")
