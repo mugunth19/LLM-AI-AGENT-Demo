@@ -27,7 +27,7 @@ collection = chroma_client.get_or_create_collection(name="RAG")
 
 # Configure Gemini API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # MCP Server Configuration
 MCP_SERVER_COMMAND = ["mcp-fitbit"]
