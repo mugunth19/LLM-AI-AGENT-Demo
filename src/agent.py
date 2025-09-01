@@ -14,11 +14,15 @@ os.environ["FITBIT_CLIENT_ID"] = os.getenv("FITBIT_CLIENT_ID")
 os.environ["FITBIT_CLIENT_SECRET"] = os.getenv("FITBIT_CLIENT_SECRET")
 
 # Setting the environment
-DATA_PATH = "parent_data_path"
-CHROMA_PATH = r"chroma_db"
+DATA_PATH = os.path.abspath(os.path.join(os.getcwd(), '.', 'data'))
+CHROMA_PATH = os.path.abspath(os.path.join(os.getcwd(), './notebooks/', 'chroma_db'))
+# print(f"Mounted data folder at: {DATA_PATH}")
+# print(f"Mounted data folder at: {CHROMA_PATH}")
+# print("ChromaDB absolute path:", os.path.abspath(CHROMA_PATH))
 
 chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
 collection = chroma_client.get_or_create_collection(name="RAG")
+# print("Collection count:", collection.count())
 
 # Configure Gemini API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -69,6 +73,7 @@ def should_use_mcp(query: str, rag_results: list) -> tuple[bool, str, dict]:
 async def main(user_query: str):
     # Get RAG results
     results = collection.query(query_texts=[user_query], n_results=20)
+    #print("RAG Results:", results['documents'])
     
     # Check if MCP server should be called
     use_mcp, tool_name, arguments = should_use_mcp(user_query, results['documents'])
@@ -96,6 +101,7 @@ async def main(user_query: str):
     
     print("\n\n---------------------\n\n")
     print(response.text)
+    #print("RAG Results:", results['documents'])
 
 if __name__ == "__main__":
     import asyncio
