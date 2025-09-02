@@ -70,6 +70,12 @@ def should_use_mcp(query: str, rag_results: list) -> tuple[bool, str, dict]:
     except Exception as e:
         # print("Decision parsing error:", e, text)
         return False, "", {}
+@cl.on_chat_start
+async def on_chat_start():
+    await cl.Message(
+        content="Hello! I am a helpful assistant. What do you want to know about health and wellness and/or your Fitbit profile information?"
+    ).send()
+
 @cl.on_message
 async def main(message: cl.Message):
     # Get RAG results
