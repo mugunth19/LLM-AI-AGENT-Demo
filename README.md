@@ -124,5 +124,17 @@ AI Coach: Suggests bodyweight squats, push-ups, planks with clear explanations.
 You: “What is my Fitbit profile information?”  
 AI Coach: Retrieves your profile data from Fitbit via MCP tool.
 
-You: “What does recent research say about intermittent fasting?”  
-AI Coach: Retrieves a summary from your docs + searches the web
+You: "Calculate my BMI index"
+AI Coach: Pull height and weight from Fitbit profile and calculates the BMI index and shows the result.
+
+** TO-DOs **
+1. Deploy in a cloud infra and access via a public URL
+2. Add a Action button and prompt user to connect to own fitbit account
+3. Add in-memory for the chats
+
+** Furture Imrpovements **
+1. Add User login
+2. Add profile/user fitbit token restoring in a database
+3. SSL for the deployments
+4. Long Term memory
+5. Add feature to upload user's own Health related PDF document and provide answers based on it.
